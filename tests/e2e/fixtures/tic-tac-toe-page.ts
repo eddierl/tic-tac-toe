@@ -18,6 +18,7 @@ export class TicTacToePage {
   async goto() {
     // Assuming the game is on the root page for now
     await this.page.goto('/');
+    await this.page.waitForSelector('[data-hydrated="true"]', { timeout: 10000 });
   }
 
   async playMove(index: number) {
