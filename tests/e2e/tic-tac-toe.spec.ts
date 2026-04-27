@@ -23,8 +23,8 @@ test.describe('Tic Tac Toe Game', () => {
     await gamePage.playMove(0);
     await expect(gamePage.squares.nth(0)).toHaveText('X');
     
-    await gamePage.playMove(0);
-    await expect(gamePage.squares.nth(0)).toHaveText('X');
+    // Assert that the occupied square is disabled
+    await expect(gamePage.squares.nth(0)).toBeDisabled();
     await expect(gamePage.status).toHaveText(/Next player: O/i);
   });
 
@@ -60,7 +60,8 @@ test.describe('Tic Tac Toe Game', () => {
     }
     await expect(gamePage.status).toHaveText(/Winner: X/i);
 
-    await gamePage.playMove(8);
+    // Assert that squares are disabled after a win
+    await expect(gamePage.squares.nth(8)).toBeDisabled();
     await expect(gamePage.squares.nth(8)).toBeEmpty();
   });
 

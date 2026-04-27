@@ -1,6 +1,8 @@
 import { Circle, X } from "lucide-react";
+import type React from "react";
 
-interface SquareProps {
+interface SquareProps
+	extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value"> {
 	value: "X" | "O" | null;
 	onClick: () => void;
 	isWinning?: boolean;
@@ -14,15 +16,18 @@ export function Square({
 	isWinning,
 	disabled,
 	dimmed,
+	...props
 }: SquareProps) {
 	return (
 		<button
 			data-testid="square"
 			type="button"
 			onClick={onClick}
+			disabled={disabled}
 			className={`
 				relative w-20 h-20 md:w-28 md:h-28 text-5xl md:text-6xl font-black rounded-2xl 
 				transition-all duration-300 flex items-center justify-center outline-none border-2
+				focus-visible:ring-4 focus-visible:ring-indigo-500/50 focus-visible:border-indigo-400
 				${
 					!value && !disabled
 						? "hover:bg-white/10 cursor-pointer bg-black/20 border-white/5 hover:border-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.1)]"
@@ -32,6 +37,7 @@ export function Square({
 				${dimmed ? "opacity-40 grayscale" : ""}
 				${!disabled && !value ? "active:scale-90" : ""}
 			`}
+			{...props}
 		>
 			<div
 				className={`
