@@ -18,7 +18,7 @@ const config = defineConfig({
 		{
 			name: "fix-external-ip-assets",
 			configureServer(server) {
-				server.middlewares.use((req, res, next) => {
+				server.middlewares.use((req, _res, next) => {
 					// If sec-fetch-dest is missing (e.g. from external IP in Chrome)
 					// and the request is for an asset, pretend it's a script/style so Nitro doesn't intercept it.
 					if (!req.headers["sec-fetch-dest"] && req.url) {

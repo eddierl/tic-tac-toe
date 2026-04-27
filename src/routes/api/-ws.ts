@@ -17,7 +17,6 @@ export default defineWebSocketHandler({
 				const opponent = waitingPeers.shift();
 				if (!opponent) throw "Something went wrong";
 
-				const gameId = `game_${Date.now()}_${Math.random()}`;
 				activeGames.set(peer.id, { x: opponent, o: peer });
 				activeGames.set(opponent.id, { x: opponent, o: peer });
 
