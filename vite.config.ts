@@ -1,21 +1,54 @@
-import { defineConfig } from 'vite'
-import { devtools } from '@tanstack/devtools-vite'
+import tailwindcss from "@tailwindcss/vite";
+import { devtools } from "@tanstack/devtools-vite";
 
-import { tanstackStart } from '@tanstack/react-start/plugin/vite'
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 
-import viteReact from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
-import { nitro } from 'nitro/vite'
+import viteReact from "@vitejs/plugin-react";
+import { nitro } from "nitro/vite";
+import { defineConfig } from "vite";
 
 const config = defineConfig({
-  resolve: { tsconfigPaths: true },
-  plugins: [
-    devtools(),
-    nitro({ rollupConfig: { external: [/^@sentry\//] } }),
-    tailwindcss(),
-    tanstackStart(),
-    viteReact(),
-  ],
-})
+	resolve: { tsconfigPaths: true },
+	server: {
+		fs: {
+			strict: false,
+		},
+	},
+	plugins: [
+		{
+			name: "fix-external-ip-assets",
+			configureServer(server) {
+				server.middlewares.use((req, res, next) => {
+					// If sec-fetch-dest is missing (e.g. from external IP in Chrome)
+					// and the request is for an asset, pretend it's a script/style so Nitro doesn't intercept it.
+					if (!req.headers["sec-fetch-dest"] && req.url) {
+						const ext = req.url.match(/\.([a-z0-9]+)(?:[?#]|$)/i)?.[1];
+						if (ext) {
+							if (["js", "mjs", "ts", "tsx", "jsx"].includes(ext)) {
+								req.headers["sec-fetch-dest"] = "script";
+							} else if (["css"].includes(ext)) {
+								req.headers["sec-fetch-dest"] = "style";
+							} else if (
+								["png", "jpg", "jpeg", "svg", "gif", "webp"].includes(ext)
+							) {
+								req.headers["sec-fetch-dest"] = "image";
+							}
+						}
+					}
+					next();
+				});
+			},
+		},
+		devtools(),
+		nitro({
+			experimental: { websocket: true },
+			rollupConfig: { external: [/^@sentry\//] },
+			handlers: [{ route: "/api/ws", handler: "./src/routes/api/-ws.ts" }],
+		}),
+		tailwindcss(),
+		tanstackStart(),
+		viteReact(),
+	],
+});
 
-export default config
+export default config;
