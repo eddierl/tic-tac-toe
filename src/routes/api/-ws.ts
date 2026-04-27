@@ -1,8 +1,9 @@
 import type { Peer } from "crossws";
 import { defineWebSocketHandler } from "nitro/h3";
 
-const waitingPeers: Peer[] = [];
+const waitingPeersByGroup = new Map<string, Peer[]>();
 const activeGames = new Map<string, { x: Peer; o: Peer }>();
+const peerGroup = new Map<string, string>();
 
 export default defineWebSocketHandler({
 	open(peer) {
@@ -10,9 +11,13 @@ export default defineWebSocketHandler({
 	},
 	message(peer, message) {
 		const data = JSON.parse(message.text());
+		const groupId = data.groupId || "default";
 
-		console.log("[ws] message", peer.id, data, waitingPeers, activeGames);
+		console.log("[ws] message", peer.id, data);
 		if (data.type === "join") {
+			peerGroup.set(peer.id, groupId);
+			const waitingPeers = waitingPeersByGroup.get(groupId) || [];
+
 			if (waitingPeers.length > 0) {
 				const opponent = waitingPeers.shift();
 				if (!opponent) throw "Something went wrong";
@@ -24,6 +29,7 @@ export default defineWebSocketHandler({
 				peer.send(JSON.stringify({ type: "matched", symbol: "O" }));
 			} else {
 				waitingPeers.push(peer);
+				waitingPeersByGroup.set(groupId, waitingPeers);
 				peer.send(JSON.stringify({ type: "waiting" }));
 			}
 		} else if (data.type === "move") {
@@ -36,9 +42,19 @@ export default defineWebSocketHandler({
 	},
 	close(peer, event) {
 		console.log("[ws] close", peer.id, event);
-		const index = waitingPeers.findIndex((p) => p.id === peer.id);
-		if (index !== -1) {
-			waitingPeers.splice(index, 1);
+		const groupId = peerGroup.get(peer.id);
+		if (groupId) {
+			const waitingPeers = waitingPeersByGroup.get(groupId);
+			if (waitingPeers) {
+				const index = waitingPeers.findIndex((p) => p.id === peer.id);
+				if (index !== -1) {
+					waitingPeers.splice(index, 1);
+				}
+				if (waitingPeers.length === 0) {
+					waitingPeersByGroup.delete(groupId);
+				}
+			}
+			peerGroup.delete(peer.id);
 		}
 
 		const game = activeGames.get(peer.id);

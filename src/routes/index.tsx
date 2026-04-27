@@ -21,6 +21,8 @@ function Home() {
 		resetGame,
 	} = useGame();
 
+	const { groupId } = Route.useSearch() as { groupId?: string };
+
 	const {
 		isMultiplayer,
 		matchStatus,
@@ -32,6 +34,7 @@ function Home() {
 	} = useMultiplayer({
 		onMoveReceived: applyMove,
 		onReset: resetGame,
+		groupId,
 	});
 
 	useEffect(() => {

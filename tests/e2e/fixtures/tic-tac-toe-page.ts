@@ -15,10 +15,12 @@ export class TicTacToePage {
     this.restartButton = page.getByRole('button', { name: /restart|reset/i });
   }
 
-  async goto() {
-    // Assuming the game is on the root page for now
-    await this.page.goto('/');
-    await this.page.waitForSelector('[data-hydrated="true"]', { timeout: 10000 });
+  async goto(groupId?: string) {
+    const url = groupId ? `/?groupId=${groupId}` : "/";
+    await this.page.goto(url);
+    await this.page.waitForSelector('[data-hydrated="true"]', {
+      timeout: 10000,
+    });
   }
 
   async playMove(index: number) {
@@ -27,11 +29,31 @@ export class TicTacToePage {
 }
 
 // 2. Define the fixture
-export const test = base.extend<{ gamePage: TicTacToePage }>({
-  gamePage: async ({ page }, use) => {
+export const test = base.extend<{ 
+  gamePage: TicTacToePage,
+  player1: TicTacToePage,
+  player2: TicTacToePage 
+}>({
+  gamePage: async ({ page }, use, testInfo) => {
     const gamePage = new TicTacToePage(page);
-    await gamePage.goto();
+    await gamePage.goto(testInfo.testId);
     await use(gamePage);
+  },
+  player1: async ({ browser }, use, testInfo) => {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    const gamePage = new TicTacToePage(page);
+    await gamePage.goto(testInfo.testId);
+    await use(gamePage);
+    await context.close();
+  },
+  player2: async ({ browser }, use, testInfo) => {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    const gamePage = new TicTacToePage(page);
+    await gamePage.goto(testInfo.testId);
+    await use(gamePage);
+    await context.close();
   },
 });
 

@@ -4,4 +4,5 @@ export type PlayerSymbol = "X" | "O";
 export interface UseMultiplayerOptions {
 	onMoveReceived: (index: number) => void;
 	onReset: () => void;
+	groupId?: string;
 }

@@ -8,6 +8,7 @@ import type {
 export function useMultiplayer({
 	onMoveReceived,
 	onReset,
+	groupId,
 }: UseMultiplayerOptions) {
 	const [isMultiplayer, setIsMultiplayer] = useState(false);
 	const [matchStatus, setMatchStatus] = useState<MatchStatus>("idle");
@@ -15,11 +16,13 @@ export function useMultiplayer({
 	const wsRef = useRef<WebSocket | null>(null);
 	const onMoveReceivedRef = useRef(onMoveReceived);
 	const onResetRef = useRef(onReset);
+	const groupIdRef = useRef(groupId);
 
 	useEffect(() => {
 		onMoveReceivedRef.current = onMoveReceived;
 		onResetRef.current = onReset;
-	}, [onMoveReceived, onReset]);
+		groupIdRef.current = groupId;
+	}, [onMoveReceived, onReset, groupId]);
 
 	const leaveParty = useCallback(() => {
 		if (wsRef.current) {
@@ -45,7 +48,8 @@ export function useMultiplayer({
 		const ws = new WebSocket(`${protocol}//${window.location.host}/api/ws`);
 		wsRef.current = ws;
 
-		ws.onopen = () => ws.send(JSON.stringify({ type: "join" }));
+		ws.onopen = () =>
+			ws.send(JSON.stringify({ type: "join", groupId: groupIdRef.current }));
 		ws.onmessage = (e) => {
 			const data = JSON.parse(e.data);
 			if (data.type === "waiting") setMatchStatus("waiting");
