@@ -14,7 +14,8 @@ export function useMultiplayer({
 	const [matchStatus, setMatchStatus] = useState<MatchStatus>("idle");
 	const [playerSymbol, setPlayerSymbol] = useState<PlayerSymbol | null>(null);
 	const [hasRequestedRematch, setHasRequestedRematch] = useState(false);
-	const [opponentRequestedRematch, setOpponentRequestedRematch] = useState(false);
+	const [opponentRequestedRematch, setOpponentRequestedRematch] =
+		useState(false);
 	const [opponentDisconnected, setOpponentDisconnected] = useState(false);
 	const wsRef = useRef<WebSocket | null>(null);
 	const onMoveReceivedRef = useRef(onMoveReceived);
@@ -39,10 +40,6 @@ export function useMultiplayer({
 		setOpponentRequestedRematch(false);
 		setOpponentDisconnected(false);
 		onResetRef.current();
-	}, []);
-
-	const switchSymbols = useCallback(() => {
-		wsRef.current?.send(JSON.stringify({ type: "switch_symbols" }));
 	}, []);
 
 	const requestRematch = useCallback(() => {
@@ -73,8 +70,6 @@ export function useMultiplayer({
 				setOpponentDisconnected(false);
 				onResetRef.current();
 			} else if (data.type === "move") onMoveReceivedRef.current(data.index);
-			else if (data.type === "switch_symbols")
-				setPlayerSymbol((p) => (p === "X" ? "O" : "X"));
 			else if (data.type === "rematch_requested")
 				setOpponentRequestedRematch(true);
 			else if (data.type === "opponent_disconnected") {
@@ -112,7 +107,6 @@ export function useMultiplayer({
 		joinParty,
 		leaveParty,
 		sendMove,
-		switchSymbols,
 		requestRematch,
 	};
 }

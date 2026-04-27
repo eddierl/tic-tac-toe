@@ -9,7 +9,6 @@ interface GameStatusProps {
 	playerSymbol: "X" | "O" | null;
 	isMyTurn: boolean;
 	gameOver: boolean;
-	switchSymbols: () => void;
 	opponentDisconnected?: boolean;
 }
 
@@ -22,7 +21,6 @@ export function GameStatus({
 	playerSymbol,
 	isMyTurn,
 	gameOver,
-	switchSymbols,
 	opponentDisconnected,
 }: GameStatusProps) {
 	return (
@@ -90,15 +88,6 @@ export function GameStatus({
 							</span>
 						)}
 					</div>
-
-					<button
-						type="button"
-						data-testid="switch-symbols"
-						onClick={switchSymbols}
-						className="text-xs font-bold uppercase tracking-widest text-white/40 hover:text-white/80 transition-colors"
-					>
-						Switch Symbols ⇄
-					</button>
 				</div>
 			)}
 		</header>

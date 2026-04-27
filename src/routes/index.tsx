@@ -33,7 +33,6 @@ function Home() {
 		joinParty,
 		leaveParty,
 		sendMove,
-		switchSymbols,
 		requestRematch,
 	} = useMultiplayer({
 		onMoveReceived: applyMove,
@@ -74,7 +73,6 @@ function Home() {
 					playerSymbol={playerSymbol}
 					isMyTurn={isMyTurn}
 					gameOver={gameOver}
-					switchSymbols={switchSymbols}
 					opponentDisconnected={opponentDisconnected}
 				/>
 
