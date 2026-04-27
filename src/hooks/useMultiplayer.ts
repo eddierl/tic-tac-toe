@@ -13,6 +13,9 @@ export function useMultiplayer({
 	const [isMultiplayer, setIsMultiplayer] = useState(false);
 	const [matchStatus, setMatchStatus] = useState<MatchStatus>("idle");
 	const [playerSymbol, setPlayerSymbol] = useState<PlayerSymbol | null>(null);
+	const [hasRequestedRematch, setHasRequestedRematch] = useState(false);
+	const [opponentRequestedRematch, setOpponentRequestedRematch] = useState(false);
+	const [opponentDisconnected, setOpponentDisconnected] = useState(false);
 	const wsRef = useRef<WebSocket | null>(null);
 	const onMoveReceivedRef = useRef(onMoveReceived);
 	const onResetRef = useRef(onReset);
@@ -32,6 +35,9 @@ export function useMultiplayer({
 		setIsMultiplayer(false);
 		setMatchStatus("idle");
 		setPlayerSymbol(null);
+		setHasRequestedRematch(false);
+		setOpponentRequestedRematch(false);
+		setOpponentDisconnected(false);
 		onResetRef.current();
 	}, []);
 
@@ -39,9 +45,15 @@ export function useMultiplayer({
 		wsRef.current?.send(JSON.stringify({ type: "switch_symbols" }));
 	}, []);
 
+	const requestRematch = useCallback(() => {
+		setHasRequestedRematch(true);
+		wsRef.current?.send(JSON.stringify({ type: "rematch" }));
+	}, []);
+
 	const joinParty = useCallback(() => {
 		setIsMultiplayer(true);
 		setMatchStatus("waiting");
+		setOpponentDisconnected(false);
 		onResetRef.current();
 
 		const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
@@ -56,10 +68,19 @@ export function useMultiplayer({
 			else if (data.type === "matched") {
 				setMatchStatus("matched");
 				setPlayerSymbol(data.symbol);
+				setHasRequestedRematch(false);
+				setOpponentRequestedRematch(false);
+				setOpponentDisconnected(false);
+				onResetRef.current();
 			} else if (data.type === "move") onMoveReceivedRef.current(data.index);
 			else if (data.type === "switch_symbols")
 				setPlayerSymbol((p) => (p === "X" ? "O" : "X"));
-			else if (data.type === "opponent_disconnected") leaveParty();
+			else if (data.type === "rematch_requested")
+				setOpponentRequestedRematch(true);
+			else if (data.type === "opponent_disconnected") {
+				setOpponentDisconnected(true);
+				setMatchStatus("idle");
+			}
 		};
 		ws.onerror = () => leaveParty();
 		ws.onclose = () =>
@@ -67,6 +88,8 @@ export function useMultiplayer({
 				if (cur !== "idle") {
 					setIsMultiplayer(false);
 					setPlayerSymbol(null);
+					setHasRequestedRematch(false);
+					setOpponentRequestedRematch(false);
 					return "idle";
 				}
 				return cur;
@@ -83,9 +106,13 @@ export function useMultiplayer({
 		isMultiplayer,
 		matchStatus,
 		playerSymbol,
+		hasRequestedRematch,
+		opponentRequestedRematch,
+		opponentDisconnected,
 		joinParty,
 		leaveParty,
 		sendMove,
 		switchSymbols,
+		requestRematch,
 	};
 }

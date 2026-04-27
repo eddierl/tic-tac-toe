@@ -27,10 +27,14 @@ function Home() {
 		isMultiplayer,
 		matchStatus,
 		playerSymbol,
+		hasRequestedRematch,
+		opponentRequestedRematch,
+		opponentDisconnected,
 		joinParty,
 		leaveParty,
 		sendMove,
 		switchSymbols,
+		requestRematch,
 	} = useMultiplayer({
 		onMoveReceived: applyMove,
 		onReset: resetGame,
@@ -71,6 +75,7 @@ function Home() {
 					isMyTurn={isMyTurn}
 					gameOver={gameOver}
 					switchSymbols={switchSymbols}
+					opponentDisconnected={opponentDisconnected}
 				/>
 
 				<GameBoard
@@ -89,6 +94,9 @@ function Home() {
 					resetGame={resetGame}
 					leaveParty={leaveParty}
 					joinParty={joinParty}
+					requestRematch={requestRematch}
+					hasRequestedRematch={hasRequestedRematch}
+					opponentRequestedRematch={opponentRequestedRematch}
 				/>
 			</div>
 		</div>

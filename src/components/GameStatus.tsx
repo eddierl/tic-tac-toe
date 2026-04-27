@@ -10,6 +10,7 @@ interface GameStatusProps {
 	isMyTurn: boolean;
 	gameOver: boolean;
 	switchSymbols: () => void;
+	opponentDisconnected?: boolean;
 }
 
 export function GameStatus({
@@ -22,6 +23,7 @@ export function GameStatus({
 	isMyTurn,
 	gameOver,
 	switchSymbols,
+	opponentDisconnected,
 }: GameStatusProps) {
 	return (
 		<header className="w-full mb-8 text-center">
@@ -29,7 +31,11 @@ export function GameStatus({
 				className="text-4xl md:text-5xl font-extrabold mb-2 tracking-tight drop-shadow-lg flex items-center justify-center gap-3 transition-all duration-300"
 				data-testid="game-status"
 			>
-				{isMultiplayer && matchStatus === "waiting" ? (
+				{isMultiplayer && opponentDisconnected ? (
+					<span className="text-rose-400 animate-bounce flex items-center gap-2">
+						Opponent Left! 💔
+					</span>
+				) : isMultiplayer && matchStatus === "waiting" ? (
 					<span className="text-amber-300 animate-pulse flex items-center gap-2">
 						Looking for opponent...
 					</span>

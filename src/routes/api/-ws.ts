@@ -4,6 +4,7 @@ import { defineWebSocketHandler } from "nitro/h3";
 const waitingPeersByGroup = new Map<string, Peer[]>();
 const activeGames = new Map<string, { x: Peer; o: Peer }>();
 const peerGroup = new Map<string, string>();
+const rematchRequests = new Set<string>();
 
 export default defineWebSocketHandler({
 	open(peer) {
@@ -38,6 +39,27 @@ export default defineWebSocketHandler({
 				const opponent = game.x.id === peer.id ? game.o : game.x;
 				opponent.send(JSON.stringify({ type: "move", index: data.index }));
 			}
+		} else if (data.type === "rematch") {
+			const game = activeGames.get(peer.id);
+			if (game) {
+				const opponent = game.x.id === peer.id ? game.o : game.x;
+				rematchRequests.add(peer.id);
+
+				if (rematchRequests.has(opponent.id)) {
+					// Both agreed, swap symbols and restart
+					const newGame = { x: game.o, o: game.x };
+					activeGames.set(game.x.id, newGame);
+					activeGames.set(game.o.id, newGame);
+
+					newGame.x.send(JSON.stringify({ type: "matched", symbol: "X" }));
+					newGame.o.send(JSON.stringify({ type: "matched", symbol: "O" }));
+
+					rematchRequests.delete(game.x.id);
+					rematchRequests.delete(game.o.id);
+				} else {
+					opponent.send(JSON.stringify({ type: "rematch_requested" }));
+				}
+			}
 		}
 	},
 	close(peer, event) {
@@ -66,6 +88,8 @@ export default defineWebSocketHandler({
 
 			activeGames.delete(game.x.id);
 			activeGames.delete(game.o.id);
+			rematchRequests.delete(game.x.id);
+			rematchRequests.delete(game.o.id);
 		}
 	},
 	error(peer, error) {
