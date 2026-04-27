@@ -46,7 +46,7 @@ export default defineWebSocketHandler({
 			const opponent = game.x.id === peer.id ? game.o : game.x;
 			try {
 				opponent.send(JSON.stringify({ type: "opponent_disconnected" }));
-			} catch (e) {}
+			} catch {}
 
 			activeGames.delete(game.x.id);
 			activeGames.delete(game.o.id);

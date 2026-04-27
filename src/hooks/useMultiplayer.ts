@@ -1,7 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { MatchStatus, PlayerSymbol, UseMultiplayerOptions } from "../types/multiplayer";
+import type {
+	MatchStatus,
+	PlayerSymbol,
+	UseMultiplayerOptions,
+} from "../types/multiplayer";
 
-export function useMultiplayer({ onMoveReceived, onReset }: UseMultiplayerOptions) {
+export function useMultiplayer({
+	onMoveReceived,
+	onReset,
+}: UseMultiplayerOptions) {
 	const [isMultiplayer, setIsMultiplayer] = useState(false);
 	const [matchStatus, setMatchStatus] = useState<MatchStatus>("idle");
 	const [playerSymbol, setPlayerSymbol] = useState<PlayerSymbol | null>(null);
@@ -46,18 +53,20 @@ export function useMultiplayer({ onMoveReceived, onReset }: UseMultiplayerOption
 				setMatchStatus("matched");
 				setPlayerSymbol(data.symbol);
 			} else if (data.type === "move") onMoveReceivedRef.current(data.index);
-			else if (data.type === "switch_symbols") setPlayerSymbol((p) => (p === "X" ? "O" : "X"));
+			else if (data.type === "switch_symbols")
+				setPlayerSymbol((p) => (p === "X" ? "O" : "X"));
 			else if (data.type === "opponent_disconnected") leaveParty();
 		};
 		ws.onerror = () => leaveParty();
-		ws.onclose = () => setMatchStatus((cur) => {
-			if (cur !== "idle") {
-				setIsMultiplayer(false);
-				setPlayerSymbol(null);
-				return "idle";
-			}
-			return cur;
-		});
+		ws.onclose = () =>
+			setMatchStatus((cur) => {
+				if (cur !== "idle") {
+					setIsMultiplayer(false);
+					setPlayerSymbol(null);
+					return "idle";
+				}
+				return cur;
+			});
 	}, [leaveParty]);
 
 	const sendMove = useCallback((index: number) => {
@@ -66,6 +75,13 @@ export function useMultiplayer({ onMoveReceived, onReset }: UseMultiplayerOption
 
 	useEffect(() => () => wsRef.current?.close(), []);
 
-	return { isMultiplayer, matchStatus, playerSymbol, joinParty, leaveParty, sendMove, switchSymbols };
+	return {
+		isMultiplayer,
+		matchStatus,
+		playerSymbol,
+		joinParty,
+		leaveParty,
+		sendMove,
+		switchSymbols,
+	};
 }
-
