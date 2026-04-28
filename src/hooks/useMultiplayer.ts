@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type {
-	MatchStatus,
-	UseMultiplayerOptions,
-} from "../types/multiplayer";
-import type { PlayerSymbol } from "#/constants";
+import type { MatchStatus, PlayerSymbol } from "#/constants";
+import type { UseMultiplayerOptions } from "../types/multiplayer";
 
 export function useMultiplayer({
 	onMoveReceived,

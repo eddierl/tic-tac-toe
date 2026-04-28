@@ -1,16 +1,24 @@
 import { defineEventHandler, readBody } from "nitro/h3";
-import { WINNING_COMBINATIONS, type PlayerSymbol, type SquareValue } from "../../constants";
+import {
+	checkWinningCombination,
+	type PlayerSymbol,
+	type SquareValue,
+	WINNING_COMBINATIONS,
+} from "../../constants";
 
 function checkWinner(squares: SquareValue[]): SquareValue {
-	for (const [a, b, c] of WINNING_COMBINATIONS) {
-		if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-			return squares[a];
-		}
-	}
-	return null;
+	const winningCombo = WINNING_COMBINATIONS.find(
+		checkWinningCombination(squares),
+	);
+	return winningCombo ? squares[winningCombo[0]] : null;
 }
 
-function minimax(squares: SquareValue[], depth: number, isMaximizing: boolean, computerSymbol: PlayerSymbol): number {
+function minimax(
+	squares: SquareValue[],
+	depth: number,
+	isMaximizing: boolean,
+	computerSymbol: PlayerSymbol,
+): number {
 	const winner = checkWinner(squares);
 	const playerSymbol = computerSymbol === "X" ? "O" : "X";
 	if (winner === computerSymbol) return 10 - depth;
@@ -48,8 +56,9 @@ export default defineEventHandler(async (event) => {
 		difficulty?: "beginner" | "medium" | "expert";
 	};
 	const squares: SquareValue[] = body.squares;
-	const difficulty: "beginner" | "medium" | "expert" = body.difficulty || "medium";
-	
+	const difficulty: "beginner" | "medium" | "expert" =
+		body.difficulty || "medium";
+
 	// Determine whose turn it is
 	const xCount = squares.filter((s) => s === "X").length;
 	const oCount = squares.filter((s) => s === "O").length;
@@ -67,12 +76,14 @@ export default defineEventHandler(async (event) => {
 
 	// Beginner: Random move
 	if (difficulty === "beginner") {
-		moveIndex = availableMoves[Math.floor(Math.random() * availableMoves.length)];
-	} 
+		moveIndex =
+			availableMoves[Math.floor(Math.random() * availableMoves.length)];
+	}
 	// Medium: 30% random, 70% minimax
 	else if (difficulty === "medium") {
 		if (Math.random() < 0.3) {
-			moveIndex = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+			moveIndex =
+				availableMoves[Math.floor(Math.random() * availableMoves.length)];
 		} else {
 			// fallback to expert
 		}

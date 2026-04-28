@@ -1,10 +1,10 @@
+import type { MatchStatus, SquareValue } from "#/constants";
 import { Square } from "./Square";
-import type { SquareValue } from "#/constants";
 
 interface GameBoardProps {
 	squares: SquareValue[];
 	isMultiplayer: boolean;
-	matchStatus: "idle" | "waiting" | "matched";
+	matchStatus: MatchStatus;
 	gameOver: boolean;
 	isMyTurn: boolean;
 	winnerInfo?: number[] | null;
@@ -76,7 +76,12 @@ export function GameBoard({
 					value={val}
 					onClick={() => onSquareClick(i)}
 					isWinning={winnerInfo?.includes(i)}
-					disabled={!!val || gameOver || !isMyTurn || (isMultiplayer && matchStatus === "waiting")}
+					disabled={
+						!!val ||
+						gameOver ||
+						!isMyTurn ||
+						(isMultiplayer && matchStatus === "waiting")
+					}
 					dimmed={gameOver && !winnerInfo?.includes(i) && !!val}
 					data-index={i}
 				/>

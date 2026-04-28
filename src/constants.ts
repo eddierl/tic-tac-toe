@@ -1,5 +1,6 @@
 export type PlayerSymbol = "X" | "O";
 export type SquareValue = PlayerSymbol | null;
+export type MatchStatus = "idle" | "waiting" | "matched";
 
 export const WINNING_COMBINATIONS = [
 	[0, 1, 2],
@@ -11,3 +12,10 @@ export const WINNING_COMBINATIONS = [
 	[0, 4, 8],
 	[2, 4, 6],
 ];
+
+export const checkWinningCombination =
+	(squares: SquareValue[]) =>
+	(combo: number[]) => {
+		const [a, b, c] = combo;
+		return squares[a] && squares[a] === squares[b] && squares[a] === squares[c];
+	};

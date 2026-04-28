@@ -1,15 +1,16 @@
 import { useCallback, useState } from "react";
-import { WINNING_COMBINATIONS, type SquareValue } from "#/constants";
+import {
+	checkWinningCombination,
+	type SquareValue,
+	WINNING_COMBINATIONS,
+} from "#/constants";
 
 export function useGame() {
 	const [squares, setSquares] = useState<SquareValue[]>(Array(9).fill(null));
 
 	const xIsNext = squares.filter(Boolean).length % 2 === 0;
 
-	const winnerInfo = WINNING_COMBINATIONS.find(
-		([a, b, c]) =>
-			squares[a] && squares[a] === squares[b] && squares[a] === squares[c],
-	);
+	const winnerInfo = WINNING_COMBINATIONS.find(checkWinningCombination(squares));
 
 	const winner = winnerInfo ? squares[winnerInfo[0]] : null;
 	const isDraw = !winner && squares.every((square) => square !== null);

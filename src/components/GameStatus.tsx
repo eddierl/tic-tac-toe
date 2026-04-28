@@ -1,9 +1,9 @@
 import { Handshake, Trophy } from "lucide-react";
-import type { SquareValue } from "#/constants";
+import type { MatchStatus, SquareValue } from "#/constants";
 
 interface GameStatusProps {
 	isMultiplayer: boolean;
-	matchStatus: "idle" | "waiting" | "matched";
+	matchStatus: MatchStatus;
 	winner: SquareValue;
 	isDraw: boolean;
 	xIsNext: boolean;
