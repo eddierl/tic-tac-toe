@@ -3,6 +3,8 @@
   <h1>🎮 Tic-Tac-Toe</h1>
   <p><strong>A modern, real-time multiplayer Tic-Tac-Toe experience built with TanStack Start.</strong></p>
 
+  <h3><a href="https://ttt.erlich.dev/">▶️ Play Live Demo</a></h3>
+
   <p>
     <img src="https://img.shields.io/badge/React-19.2-blue.svg?style=flat-square&logo=react" alt="React" />
     <img src="https://img.shields.io/badge/TypeScript-5.7-blue.svg?style=flat-square&logo=typescript" alt="TypeScript" />
