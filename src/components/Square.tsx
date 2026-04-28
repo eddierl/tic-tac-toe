@@ -23,8 +23,8 @@ export function Square({
 		<button
 			data-testid="square"
 			type="button"
-			onClick={onClick}
-			disabled={disabled}
+			onClick={disabled ? undefined : onClick}
+			aria-disabled={disabled}
 			className={`
 				relative w-20 h-20 md:w-28 md:h-28 text-5xl md:text-6xl font-black rounded-2xl 
 				transition-all duration-300 flex items-center justify-center outline-none border-2

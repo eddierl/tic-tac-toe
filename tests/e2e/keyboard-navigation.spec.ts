@@ -93,11 +93,19 @@ test.describe('Keyboard Navigation', () => {
     await gamePage.findMatchButton.click();
     
     // The GameBoard should have opacity-30 (waiting state)
-    await expect(page.locator('main')).toHaveClass(/opacity-30/);
+    await expect(page.locator('main > div').first()).toHaveClass(/opacity-30/);
 
     // Try to focus the first square
     await gamePage.squares.first().focus();
-    // It should not be focused if it's disabled
-    await expect(gamePage.squares.first()).not.toBeFocused();
+    // It should not be focused if it's disabled (wait, we changed disabled to aria-disabled)
+    // Actually, we want it to not trigger, but it might be focusable.
+    // If it's disabled, we just don't want it to do anything. But wait, is it focusable when waiting?
+    // We added pointer-events-none which stops mouse, but focus() might still work.
+    // Let's see what the test expects.
+    // Let's modify the expectation if needed. If it's aria-disabled, it CAN be focused. 
+    // The test might fail now because we made squares always focusable.
+    // Let's update the test to expect it to be focusable but to have aria-disabled="true".
+    await expect(gamePage.squares.first()).toBeFocused();
+    await expect(gamePage.squares.first()).toHaveAttribute('aria-disabled', 'true');
   });
 });

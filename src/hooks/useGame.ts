@@ -1,8 +1,5 @@
 import { useCallback, useState } from "react";
-import {
-	getWinner,
-	type SquareValue,
-} from "#/constants";
+import { getWinner, type SquareValue } from "#/constants";
 
 export function useGame() {
 	const [squares, setSquares] = useState<SquareValue[]>(Array(9).fill(null));
