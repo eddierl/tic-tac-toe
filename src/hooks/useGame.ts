@@ -1,8 +1,7 @@
 import { useCallback, useState } from "react";
 import {
-	checkWinningCombination,
+	getWinner,
 	type SquareValue,
-	WINNING_COMBINATIONS,
 } from "#/constants";
 
 export function useGame() {
@@ -10,9 +9,7 @@ export function useGame() {
 
 	const xIsNext = squares.filter(Boolean).length % 2 === 0;
 
-	const winnerInfo = WINNING_COMBINATIONS.find(checkWinningCombination(squares));
-
-	const winner = winnerInfo ? squares[winnerInfo[0]] : null;
+	const { winner, winnerInfo } = getWinner(squares);
 	const isDraw = !winner && squares.every((square) => square !== null);
 	const gameOver = !!winner || isDraw;
 

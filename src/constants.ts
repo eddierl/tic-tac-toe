@@ -1,8 +1,9 @@
 export type PlayerSymbol = "X" | "O";
 export type SquareValue = PlayerSymbol | null;
 export type MatchStatus = "idle" | "waiting" | "matched";
+export type BotDifficulty = "beginner" | "medium" | "expert";
 
-export const WINNING_COMBINATIONS = [
+const WINNING_COMBINATIONS = [
 	[0, 1, 2],
 	[3, 4, 5],
 	[6, 7, 8],
@@ -14,8 +15,17 @@ export const WINNING_COMBINATIONS = [
 ];
 
 export const checkWinningCombination =
-	(squares: SquareValue[]) =>
-	(combo: number[]) => {
+	(squares: SquareValue[]) => (combo: number[]) => {
 		const [a, b, c] = combo;
 		return squares[a] && squares[a] === squares[b] && squares[a] === squares[c];
 	};
+
+export const getWinner = (squares: SquareValue[]) => {
+	const winnerInfo = WINNING_COMBINATIONS.find(
+		checkWinningCombination(squares),
+	);
+	return {
+		winner: winnerInfo ? squares[winnerInfo[0]] : null,
+		winnerInfo,
+	};
+};

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import type { BotDifficulty } from "#/constants";
 import { useGame } from "#/hooks/useGame";
 import { useMultiplayer } from "#/hooks/useMultiplayer";
 import { GameBoard } from "../components/GameBoard";
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/")({ component: Home });
 function Home() {
 	const [isHydrated, setIsHydrated] = useState(false);
 	const [isVsComputer, setIsVsComputer] = useState(true);
-	const [difficulty, setDifficulty] = useState<"beginner" | "medium" | "expert">("medium");
+	const [difficulty, setDifficulty] = useState<BotDifficulty>("medium");
 	const {
 		squares,
 		xIsNext,
@@ -79,7 +80,15 @@ function Home() {
 		return () => {
 			ignore = true;
 		};
-	}, [isMultiplayer, isVsComputer, gameOver, xIsNext, squares, difficulty, applyMove]);
+	}, [
+		isMultiplayer,
+		isVsComputer,
+		gameOver,
+		xIsNext,
+		squares,
+		difficulty,
+		applyMove,
+	]);
 
 	const handleSquareClick = (index: number) => {
 		if (squares[index] || gameOver || !isMyTurn) return;

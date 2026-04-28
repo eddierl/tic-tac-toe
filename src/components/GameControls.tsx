@@ -1,4 +1,5 @@
 import { Globe, LogOut, RefreshCw } from "lucide-react";
+import type { BotDifficulty } from "#/constants";
 
 interface GameControlsProps {
 	isMultiplayer: boolean;
@@ -11,8 +12,8 @@ interface GameControlsProps {
 	opponentRequestedRematch?: boolean;
 	isVsComputer?: boolean;
 	setIsVsComputer?: (vs: boolean) => void;
-	difficulty?: "beginner" | "medium" | "expert";
-	setDifficulty?: (diff: "beginner" | "medium" | "expert") => void;
+	difficulty?: BotDifficulty;
+	setDifficulty?: (diff: BotDifficulty) => void;
 }
 
 export function GameControls({
@@ -35,7 +36,9 @@ export function GameControls({
 				{!isMultiplayer && setIsVsComputer && setDifficulty && (
 					<div className="flex flex-col gap-2 w-full bg-white/5 p-4 rounded-2xl backdrop-blur-md border border-white/10 shadow-lg">
 						<div className="flex items-center justify-between">
-							<span className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Game Mode</span>
+							<span className="text-sm font-semibold text-slate-300 uppercase tracking-wider">
+								Game Mode
+							</span>
 							<div className="flex gap-2">
 								<button
 									type="button"
@@ -62,18 +65,22 @@ export function GameControls({
 						>
 							<div className="overflow-hidden">
 								<div className="flex items-center justify-between pt-2 border-t border-white/10">
-									<span className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Bot Level</span>
+									<span className="text-sm font-semibold text-slate-300 uppercase tracking-wider">
+										Bot Level
+									</span>
 									<div className="flex gap-1 sm:gap-2">
-										{(["beginner", "medium", "expert"] as const).map((level) => (
-											<button
-												key={level}
-												type="button"
-												onClick={() => setDifficulty(level)}
-												className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium rounded-lg capitalize transition-colors ${difficulty === level ? "bg-emerald-500 text-white" : "bg-white/10 text-slate-300 hover:bg-white/20"}`}
-											>
-												{level}
-											</button>
-										))}
+										{(["beginner", "medium", "expert"] as const).map(
+											(level) => (
+												<button
+													key={level}
+													type="button"
+													onClick={() => setDifficulty(level)}
+													className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium rounded-lg capitalize transition-colors ${difficulty === level ? "bg-emerald-500 text-white" : "bg-white/10 text-slate-300 hover:bg-white/20"}`}
+												>
+													{level}
+												</button>
+											),
+										)}
 									</div>
 								</div>
 							</div>

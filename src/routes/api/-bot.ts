@@ -1,17 +1,10 @@
 import { defineEventHandler, readBody } from "nitro/h3";
 import {
-	checkWinningCombination,
+	type BotDifficulty,
+	getWinner,
 	type PlayerSymbol,
 	type SquareValue,
-	WINNING_COMBINATIONS,
 } from "../../constants";
-
-function checkWinner(squares: SquareValue[]): SquareValue {
-	const winningCombo = WINNING_COMBINATIONS.find(
-		checkWinningCombination(squares),
-	);
-	return winningCombo ? squares[winningCombo[0]] : null;
-}
 
 function minimax(
 	squares: SquareValue[],
@@ -19,7 +12,7 @@ function minimax(
 	isMaximizing: boolean,
 	computerSymbol: PlayerSymbol,
 ): number {
-	const winner = checkWinner(squares);
+	const { winner } = getWinner(squares);
 	const playerSymbol = computerSymbol === "X" ? "O" : "X";
 	if (winner === computerSymbol) return 10 - depth;
 	if (winner === playerSymbol) return depth - 10;
@@ -53,11 +46,10 @@ function minimax(
 export default defineEventHandler(async (event) => {
 	const body = (await readBody(event)) as {
 		squares: SquareValue[];
-		difficulty?: "beginner" | "medium" | "expert";
+		difficulty?: BotDifficulty;
 	};
 	const squares: SquareValue[] = body.squares;
-	const difficulty: "beginner" | "medium" | "expert" =
-		body.difficulty || "medium";
+	const difficulty: BotDifficulty = body.difficulty || "medium";
 
 	// Determine whose turn it is
 	const xCount = squares.filter((s) => s === "X").length;
