@@ -1,18 +1,5 @@
 import { useCallback, useState } from "react";
-
-export type Symbol = "X" | "O";
-export type SquareValue = Symbol | null;
-
-export const WINNING_COMBINATIONS = [
-	[0, 1, 2],
-	[3, 4, 5],
-	[6, 7, 8],
-	[0, 3, 6],
-	[1, 4, 7],
-	[2, 5, 8],
-	[0, 4, 8],
-	[2, 4, 6],
-];
+import { WINNING_COMBINATIONS, type SquareValue } from "#/constants";
 
 export function useGame() {
 	const [squares, setSquares] = useState<SquareValue[]>(Array(9).fill(null));

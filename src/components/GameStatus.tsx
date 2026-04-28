@@ -1,12 +1,13 @@
 import { Handshake, Trophy } from "lucide-react";
+import type { SquareValue } from "#/constants";
 
 interface GameStatusProps {
 	isMultiplayer: boolean;
 	matchStatus: "idle" | "waiting" | "matched";
-	winner: "X" | "O" | null;
+	winner: SquareValue;
 	isDraw: boolean;
 	xIsNext: boolean;
-	playerSymbol: "X" | "O" | null;
+	playerSymbol: SquareValue;
 	isMyTurn: boolean;
 	gameOver: boolean;
 	opponentDisconnected?: boolean;

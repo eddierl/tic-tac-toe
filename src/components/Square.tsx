@@ -1,9 +1,10 @@
 import { Circle, X } from "lucide-react";
 import type React from "react";
+import type { SquareValue } from "#/constants";
 
 interface SquareProps
 	extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, "value"> {
-	value: "X" | "O" | null;
+	value: SquareValue;
 	onClick: () => void;
 	isWinning?: boolean;
 	disabled?: boolean;

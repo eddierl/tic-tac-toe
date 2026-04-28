@@ -1,14 +1,7 @@
 import { defineEventHandler, readBody } from "nitro/h3";
+import { WINNING_COMBINATIONS, type PlayerSymbol, type SquareValue } from "../../constants";
 
-type Symbol = "X" | "O" | null;
-
-const WINNING_COMBINATIONS = [
-	[0, 1, 2], [3, 4, 5], [6, 7, 8],
-	[0, 3, 6], [1, 4, 7], [2, 5, 8],
-	[0, 4, 8], [2, 4, 6],
-];
-
-function checkWinner(squares: Symbol[]): Symbol {
+function checkWinner(squares: SquareValue[]): SquareValue {
 	for (const [a, b, c] of WINNING_COMBINATIONS) {
 		if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
 			return squares[a];
@@ -17,7 +10,7 @@ function checkWinner(squares: Symbol[]): Symbol {
 	return null;
 }
 
-function minimax(squares: Symbol[], depth: number, isMaximizing: boolean, computerSymbol: "X" | "O"): number {
+function minimax(squares: SquareValue[], depth: number, isMaximizing: boolean, computerSymbol: PlayerSymbol): number {
 	const winner = checkWinner(squares);
 	const playerSymbol = computerSymbol === "X" ? "O" : "X";
 	if (winner === computerSymbol) return 10 - depth;
@@ -51,10 +44,10 @@ function minimax(squares: Symbol[], depth: number, isMaximizing: boolean, comput
 
 export default defineEventHandler(async (event) => {
 	const body = (await readBody(event)) as {
-		squares: Symbol[];
+		squares: SquareValue[];
 		difficulty?: "beginner" | "medium" | "expert";
 	};
-	const squares: Symbol[] = body.squares;
+	const squares: SquareValue[] = body.squares;
 	const difficulty: "beginner" | "medium" | "expert" = body.difficulty || "medium";
 	
 	// Determine whose turn it is

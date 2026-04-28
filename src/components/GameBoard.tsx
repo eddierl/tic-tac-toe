@@ -1,7 +1,8 @@
 import { Square } from "./Square";
+import type { SquareValue } from "#/constants";
 
 interface GameBoardProps {
-	squares: ("X" | "O" | null)[];
+	squares: SquareValue[];
 	isMultiplayer: boolean;
 	matchStatus: "idle" | "waiting" | "matched";
 	gameOver: boolean;
