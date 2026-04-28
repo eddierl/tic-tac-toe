@@ -15,7 +15,7 @@ const config = defineConfig({
 		},
 	},
 	preview: {
-		allowedHosts: [".onrender.com"],
+		allowedHosts: [".erlich.dev"],
 	},
 	plugins: [
 		{
