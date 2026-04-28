@@ -27,6 +27,8 @@ export class TicTacToePage {
     await this.page.waitForSelector('[data-hydrated="true"]', {
       timeout: 10000,
     });
+    // Default to vs Friend for deterministic E2E testing
+    await this.page.getByRole('button', { name: /vs Friend/i }).click();
   }
 
   async playMove(index: number) {

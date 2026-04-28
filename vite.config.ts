@@ -43,7 +43,10 @@ const config = defineConfig({
 		nitro({
 			experimental: { websocket: true },
 			rollupConfig: { external: [/^@sentry\//] },
-			handlers: [{ route: "/api/ws", handler: "./src/routes/api/-ws.ts" }],
+			handlers: [
+				{ route: "/api/ws", handler: "./src/routes/api/-ws.ts" },
+				{ route: "/api/bot", handler: "./src/routes/api/-bot.ts" }
+			],
 		}),
 		tailwindcss(),
 		tanstackStart(),

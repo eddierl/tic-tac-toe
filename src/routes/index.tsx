@@ -10,6 +10,8 @@ export const Route = createFileRoute("/")({ component: Home });
 
 function Home() {
 	const [isHydrated, setIsHydrated] = useState(false);
+	const [isVsComputer, setIsVsComputer] = useState(true);
+	const [difficulty, setDifficulty] = useState<"beginner" | "medium" | "expert">("medium");
 	const {
 		squares,
 		xIsNext,
@@ -46,7 +48,38 @@ function Home() {
 
 	const isMyTurn = isMultiplayer
 		? (playerSymbol === "X" && xIsNext) || (playerSymbol === "O" && !xIsNext)
-		: true;
+		: isVsComputer
+			? xIsNext
+			: true;
+
+	useEffect(() => {
+		if (isMultiplayer || !isVsComputer || gameOver || xIsNext) return;
+
+		let ignore = false;
+		const fetchBotMove = async () => {
+			try {
+				const res = await fetch("/api/bot", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ squares, difficulty }),
+				});
+				const data = await res.json();
+				if (!ignore && data.index !== -1 && data.index !== undefined) {
+					setTimeout(() => {
+						if (!ignore) applyMove(data.index);
+					}, 500);
+				}
+			} catch (err) {
+				console.error("Failed to fetch bot move:", err);
+			}
+		};
+
+		fetchBotMove();
+
+		return () => {
+			ignore = true;
+		};
+	}, [isMultiplayer, isVsComputer, gameOver, xIsNext, squares, difficulty, applyMove]);
 
 	const handleSquareClick = (index: number) => {
 		if (squares[index] || gameOver || !isMyTurn) return;
@@ -58,7 +91,7 @@ function Home() {
 
 	return (
 		<div
-			className="min-h-screen bg-linear-to-br from-slate-900 via-indigo-950 to-slate-900 flex flex-col items-center justify-center p-8 font-sans selection:bg-indigo-500/30 overflow-hidden text-white"
+			className="min-h-screen bg-linear-to-br from-slate-900 via-indigo-950 to-slate-900 flex flex-col items-center pt-16 md:pt-24 lg:pt-32 p-8 font-sans selection:bg-indigo-500/30 overflow-hidden text-white"
 			data-hydrated={isHydrated}
 		>
 			<div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay pointer-events-none" />
@@ -95,6 +128,10 @@ function Home() {
 					requestRematch={requestRematch}
 					hasRequestedRematch={hasRequestedRematch}
 					opponentRequestedRematch={opponentRequestedRematch}
+					isVsComputer={isVsComputer}
+					setIsVsComputer={setIsVsComputer}
+					difficulty={difficulty}
+					setDifficulty={setDifficulty}
 				/>
 			</div>
 		</div>
