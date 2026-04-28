@@ -14,6 +14,9 @@ const config = defineConfig({
 			strict: false,
 		},
 	},
+	preview: {
+		allowedHosts: [".onrender.com"],
+	},
 	plugins: [
 		{
 			name: "fix-external-ip-assets",
@@ -45,7 +48,7 @@ const config = defineConfig({
 			rollupConfig: { external: [/^@sentry\//] },
 			handlers: [
 				{ route: "/api/ws", handler: "./src/routes/api/-ws.ts" },
-				{ route: "/api/bot", handler: "./src/routes/api/-bot.ts" }
+				{ route: "/api/bot", handler: "./src/routes/api/-bot.ts" },
 			],
 		}),
 		tailwindcss(),
