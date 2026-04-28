@@ -1,4 +1,5 @@
 import { Globe, LogOut, RefreshCw } from "lucide-react";
+import { useEffect } from "react";
 import type { BotDifficulty } from "#/constants";
 
 interface GameControlsProps {
@@ -30,6 +31,35 @@ export function GameControls({
 	difficulty,
 	setDifficulty,
 }: GameControlsProps) {
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "r" || e.key === "R") {
+				if (isMultiplayer) {
+					if (gameOver && requestRematch && !hasRequestedRematch) {
+						requestRematch();
+					}
+				} else {
+					resetGame();
+				}
+			}
+			if (e.key === "f" || e.key === "F") {
+				if (!isMultiplayer) {
+					joinParty();
+				}
+			}
+		};
+
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [
+		isMultiplayer,
+		gameOver,
+		requestRematch,
+		hasRequestedRematch,
+		resetGame,
+		joinParty,
+	]);
+
 	return (
 		<footer className="mt-12 flex flex-col sm:flex-row gap-4 w-full">
 			<div className="flex flex-col gap-4 w-full">
@@ -104,6 +134,7 @@ export function GameControls({
 							}
 							${gameOver && !isMultiplayer ? "animate-bounce shadow-indigo-500/40" : ""}
 						`}
+						title={isMultiplayer ? undefined : "Press 'R' to restart"}
 					>
 						{isMultiplayer ? (
 							<>
@@ -122,6 +153,7 @@ export function GameControls({
 						<button
 							type="button"
 							onClick={joinParty}
+							title="Press 'F' to find a match"
 							className="flex-1 px-8 py-4 bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 
 								text-white rounded-2xl font-bold text-lg tracking-wide shadow-xl shadow-emerald-500/20
 								transition-all duration-300 transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2
@@ -137,6 +169,7 @@ export function GameControls({
 							type="button"
 							onClick={requestRematch}
 							disabled={hasRequestedRematch}
+							title="Press 'R' to rematch"
 							className={`
 								flex-1 px-8 py-4 rounded-2xl font-bold text-lg tracking-wide flex items-center justify-center gap-2
 								transition-all duration-300 transform hover:-translate-y-1 active:scale-95
