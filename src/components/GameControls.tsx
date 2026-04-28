@@ -113,7 +113,7 @@ export function GameControls({
 						) : (
 							<>
 								<RefreshCw className="w-5 h-5" />
-								Restart Game
+								Restart
 							</>
 						)}
 					</button>
@@ -128,7 +128,7 @@ export function GameControls({
 								focus-visible:ring-4 focus-visible:ring-emerald-500/50 focus-visible:outline-none"
 						>
 							<Globe className="w-5 h-5" />
-							Find Match 🌍
+							Find Match
 						</button>
 					)}
 
