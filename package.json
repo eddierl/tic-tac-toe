@@ -12,7 +12,8 @@
     "test": "vitest run",
     "format": "biome format --write",
     "lint": "biome check",
-    "lint:fix": "biome check --write"
+    "lint:fix": "biome check --write",
+    "gen:favicon": "tsx screenshot.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",
