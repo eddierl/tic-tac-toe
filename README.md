@@ -1,204 +1,104 @@
-Welcome to your new TanStack Start app! 
+<div align="center">
+  <img src="public/logo512.png" alt="Tic-Tac-Toe Logo" width="128" height="128" />
+  <h1>🎮 Tic-Tac-Toe</h1>
+  <p><strong>A modern, real-time multiplayer Tic-Tac-Toe experience built with TanStack Start.</strong></p>
 
-# Getting Started
+  <p>
+    <img src="https://img.shields.io/badge/React-19.2-blue.svg?style=flat-square&logo=react" alt="React" />
+    <img src="https://img.shields.io/badge/TypeScript-5.7-blue.svg?style=flat-square&logo=typescript" alt="TypeScript" />
+    <img src="https://img.shields.io/badge/Tailwind_CSS-4.1-38B2AC.svg?style=flat-square&logo=tailwind-css" alt="Tailwind CSS" />
+    <img src="https://img.shields.io/badge/TanStack_Start-Latest-FF4154.svg?style=flat-square" alt="TanStack Start" />
+    <img src="https://img.shields.io/badge/Playwright-Tested-2EAD33.svg?style=flat-square&logo=playwright" alt="Playwright" />
+  </p>
+</div>
 
-To run this application:
+---
 
-```bash
-npm install
-npm run dev
-```
+## ✨ Features
 
-# Building For Production
+- **🤖 Single Player vs. Bot** — Sharpen your skills against an intelligent computer opponent.
+- **🌐 Real-time Multiplayer** — Challenge your friends instantly via built-in WebSocket matchmaking.
+- **🔄 Rematch System** — Keep the games going! Send and accept rematch requests seamlessly.
+- **⌨️ Keyboard Accessible** — Navigate the board entirely with arrow keys or **Vim bindings** (`h`, `j`, `k`, `l`).
+- **💅 Beautiful UI/UX** — Crafted with Tailwind CSS v4 for a premium, responsive, and glassmorphic look.
+- **🧪 Robust TDD Foundation** — Ensured reliability with comprehensive Playwright E2E tests and Vitest.
+- **⚡ Blazing Fast** — Powered by Vite and TanStack Start for lightning-fast HMR and server-side rendering optimizations.
 
-To build this application for production:
+## 🛠 Tech Stack
 
-```bash
-npm run build
-```
+| Category | Technology |
+| --- | --- |
+| **Frontend** | React 19, TypeScript |
+| **Framework** | TanStack Start, TanStack Router |
+| **Styling** | Tailwind CSS v4, Lucide Icons |
+| **Backend/API** | Nitro (WebSocket handlers, API routes) |
+| **Tooling** | Vite, Biome (Linting/Formatting) |
+| **Testing** | Playwright (E2E), Vitest (Unit) |
 
-## Testing
+## 🚀 Getting Started
 
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+Follow these steps to get the project running locally on your machine.
 
-```bash
-npm run test
-```
+### Prerequisites
 
-## Styling
+- [Node.js](https://nodejs.org/) (v20+ recommended)
+- [npm](https://www.npmjs.com/) 
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+### Installation
 
-### Removing Tailwind CSS
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/eddierl/tic-tac-toe.git
+   cd tic-tac-toe
+   ```
 
-If you prefer not to use Tailwind CSS:
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Uninstall the packages: `npm install @tailwindcss/vite tailwindcss -D`
+3. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+   > The server will start at `http://localhost:3000`. WebSockets and API routes run on the same Nitro server instance.
 
-## Linting & Formatting
+## 🎮 How to Play
 
-This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:
+### Single Player
+Simply launch the game, select "Play vs Bot", and try to outsmart the computer. 
 
+### Multiplayer
+1. Click **Play with Friend**.
+2. Share your screen or have a friend join on the same network.
+3. WebSockets automatically pair you up when a match is found!
 
-```bash
-npm run lint
-npm run format
-npm run check
-```
+### Keyboard Controls
+- **Arrows / Vim (`h`, `j`, `k`, `l`)**: Move around the grid.
+- **Enter / Space**: Place your symbol (X or O).
+- **Tab**: Focus interactive buttons.
 
+## 📦 Scripts
 
+- `npm run dev` — Starts the Vite development server.
+- `npm run build` — Builds the app for production.
+- `npm run preview` — Previews the production build locally.
+- `npm run test` — Runs Vitest test suites.
+- `npm run lint` — Runs Biome checks.
+- `npm run format` — Auto-formats code with Biome.
+- `npm run gen:favicon` — Generates app logos and favicon via Playwright screenshot.
 
-## Routing
+## 🤝 Contributing
 
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
+Contributions are welcome! Please feel free to submit a Pull Request.
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-### Adding A Route
+---
 
-To add a new route to your application just add a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from '@tanstack/react-start'
-
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
-
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+<div align="center">
+  <sub>Built with ❤️ by Eddie Erlich and the Open Source Community</sub>
+</div>
