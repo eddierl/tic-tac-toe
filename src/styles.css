@@ -19,3 +19,13 @@ body {
   margin: 0;
 }
 
+
+@keyframes sequence-fill {
+  0%, 20% { opacity: 0; transform: scale(0.5); }
+  30%, 70% { opacity: 1; transform: scale(1); }
+  80%, 100% { opacity: 0; transform: scale(0.5); }
+}
+
+.animate-sequence {
+  animation: sequence-fill 2s infinite;
+}

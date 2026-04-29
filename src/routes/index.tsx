@@ -96,7 +96,68 @@ function Home() {
 		applyMove(index);
 	};
 
-	if (!isHydrated) return null;
+	if (!isHydrated) {
+		return (
+			<div
+				className="min-h-screen bg-linear-to-br from-slate-900 via-indigo-950 to-slate-900 flex flex-col items-center justify-center p-8 font-sans selection:bg-indigo-500/30 overflow-hidden text-white"
+				data-hydrated={isHydrated}
+			>
+				<div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-30 mix-blend-overlay pointer-events-none" />
+				<div className="relative z-10 flex flex-col items-center gap-10">
+					<div className="flex gap-4 p-6 bg-white/5 rounded-3xl backdrop-blur-md border border-white/10 shadow-2xl">
+						{[0, 1, 2].map((i) => (
+							<div
+								key={i}
+								className="w-20 h-20 md:w-28 md:h-28 bg-black/40 rounded-2xl border-2 border-transparent flex items-center justify-center animate-sequence"
+								style={{ animationDelay: `${i * 300}ms` }}
+							>
+								{i % 2 === 0 ? (
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="3"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										className="w-12 h-12 md:w-16 md:h-16 text-emerald-400 drop-shadow-[0_0_10px_rgba(52,211,153,0.5)]"
+									>
+										<title>X</title>
+										<path d="M18 6 6 18" />
+										<path d="m6 6 12 12" />
+									</svg>
+								) : (
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										viewBox="0 0 24 24"
+										fill="none"
+										stroke="currentColor"
+										strokeWidth="3"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										className="w-10 h-10 md:w-14 md:h-14 text-sky-400 drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]"
+									>
+										<title>O</title>
+										<circle cx="12" cy="12" r="10" />
+									</svg>
+								)}
+							</div>
+						))}
+					</div>
+					<div className="flex flex-col items-center gap-2">
+						<p className="text-indigo-300 font-bold text-xl tracking-widest animate-pulse uppercase">
+							Preparing Match
+						</p>
+						<div className="flex gap-1">
+							<div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
+							<div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce [animation-delay:-0.15s]" />
+							<div className="w-1.5 h-1.5 bg-indigo-500 rounded-full animate-bounce" />
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div
