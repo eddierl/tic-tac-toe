@@ -105,7 +105,11 @@ export function GameControls({
 													key={level}
 													type="button"
 													onClick={() => setDifficulty(level)}
-													className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium rounded-lg capitalize transition-colors ${difficulty === level ? "bg-emerald-500 text-white" : "bg-white/10 text-slate-300 hover:bg-white/20"}`}
+													className={`px-2 sm:px-3 py-1 text-xs sm:text-sm font-medium rounded-lg capitalize transition-all duration-300 ${
+														difficulty === level
+															? "bg-linear-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-500/20"
+															: "bg-white/10 text-slate-300 hover:bg-white/20"
+													}`}
 												>
 													{level}
 												</button>
