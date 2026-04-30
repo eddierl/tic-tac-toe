@@ -119,6 +119,7 @@ export function GameBoard({
 						}
 						dimmed={gameOver && !winnerInfo?.includes(i) && !!val}
 						data-index={i}
+						aria-label={`${["top", "center", "bottom"][Math.floor(i / 3)]} ${["left", "center", "right"][i % 3]} square`}
 					/>
 				))}
 			</div>
