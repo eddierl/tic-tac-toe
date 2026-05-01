@@ -14,6 +14,10 @@ export function useMultiplayer({
 	const [opponentRequestedRematch, setOpponentRequestedRematch] =
 		useState(false);
 	const [opponentDisconnected, setOpponentDisconnected] = useState(false);
+	const [scores, setScores] = useState<{ mine: number; theirs: number }>({
+		mine: 0,
+		theirs: 0,
+	});
 	const wsRef = useRef<WebSocket | null>(null);
 	const onMoveReceivedRef = useRef(onMoveReceived);
 	const onResetRef = useRef(onReset);
@@ -36,6 +40,7 @@ export function useMultiplayer({
 		setHasRequestedRematch(false);
 		setOpponentRequestedRematch(false);
 		setOpponentDisconnected(false);
+		setScores({ mine: 0, theirs: 0 });
 		onResetRef.current();
 	}, []);
 
@@ -65,8 +70,10 @@ export function useMultiplayer({
 				setHasRequestedRematch(false);
 				setOpponentRequestedRematch(false);
 				setOpponentDisconnected(false);
+				if (data.scores) setScores(data.scores);
 				onResetRef.current();
 			} else if (data.type === "move") onMoveReceivedRef.current(data.index);
+			else if (data.type === "score_update") setScores(data.scores);
 			else if (data.type === "rematch_requested")
 				setOpponentRequestedRematch(true);
 			else if (data.type === "opponent_disconnected") {
@@ -92,6 +99,10 @@ export function useMultiplayer({
 		wsRef.current?.send(JSON.stringify({ type: "move", index }));
 	}, []);
 
+	const sendGameOver = useCallback((winner: PlayerSymbol | null) => {
+		wsRef.current?.send(JSON.stringify({ type: "game_over", winner }));
+	}, []);
+
 	useEffect(() => () => wsRef.current?.close(), []);
 
 	return {
@@ -101,9 +112,11 @@ export function useMultiplayer({
 		hasRequestedRematch,
 		opponentRequestedRematch,
 		opponentDisconnected,
+		scores,
 		joinParty,
 		leaveParty,
 		sendMove,
+		sendGameOver,
 		requestRematch,
 	};
 }

@@ -37,11 +37,19 @@ function Home() {
 		leaveParty,
 		sendMove,
 		requestRematch,
+		sendGameOver,
+		scores,
 	} = useMultiplayer({
 		onMoveReceived: applyMove,
 		onReset: resetGame,
 		groupId,
 	});
+
+	useEffect(() => {
+		if (isMultiplayer && gameOver && winner) {
+			sendGameOver(winner);
+		}
+	}, [isMultiplayer, gameOver, winner, sendGameOver]);
 
 	useEffect(() => {
 		setIsHydrated(true);
@@ -177,6 +185,7 @@ function Home() {
 					isMyTurn={isMyTurn}
 					gameOver={gameOver}
 					opponentDisconnected={opponentDisconnected}
+					scores={scores}
 				/>
 
 				<GameBoard

@@ -2,7 +2,10 @@ import type { Peer } from "crossws";
 import { defineWebSocketHandler } from "nitro/h3";
 
 const waitingPeersByGroup = new Map<string, Peer[]>();
-const activeGames = new Map<string, { x: Peer; o: Peer }>();
+const activeGames = new Map<
+	string,
+	{ x: Peer; o: Peer; score: { x: number; o: number } }
+>();
 const peerGroup = new Map<string, string>();
 const rematchRequests = new Set<string>();
 
@@ -23,11 +26,29 @@ export default defineWebSocketHandler({
 				const opponent = waitingPeers.shift();
 				if (!opponent) throw "Something went wrong";
 
-				activeGames.set(peer.id, { x: opponent, o: peer });
-				activeGames.set(opponent.id, { x: opponent, o: peer });
+				const gameData = {
+					x: opponent,
+					o: peer,
+					scores: { [opponent.id]: 0, [peer.id]: 0 },
+					isGameOver: false,
+				};
+				activeGames.set(peer.id, gameData);
+				activeGames.set(opponent.id, gameData);
 
-				opponent.send(JSON.stringify({ type: "matched", symbol: "X" }));
-				peer.send(JSON.stringify({ type: "matched", symbol: "O" }));
+				opponent.send(
+					JSON.stringify({
+						type: "matched",
+						symbol: "X",
+						scores: { mine: 0, theirs: 0 },
+					}),
+				);
+				peer.send(
+					JSON.stringify({
+						type: "matched",
+						symbol: "O",
+						scores: { mine: 0, theirs: 0 },
+					}),
+				);
 			} else {
 				waitingPeers.push(peer);
 				waitingPeersByGroup.set(groupId, waitingPeers);
@@ -39,6 +60,26 @@ export default defineWebSocketHandler({
 				const opponent = game.x.id === peer.id ? game.o : game.x;
 				opponent.send(JSON.stringify({ type: "move", index: data.index }));
 			}
+		} else if (data.type === "game_over") {
+			const game = activeGames.get(peer.id);
+			if (game && !game.isGameOver && data.winner) {
+				game.isGameOver = true;
+				const winnerId = data.winner === "X" ? game.x.id : game.o.id;
+				game.scores[winnerId]++;
+
+				game.x.send(
+					JSON.stringify({
+						type: "score_update",
+						scores: { mine: game.scores[game.x.id], theirs: game.scores[game.o.id] },
+					}),
+				);
+				game.o.send(
+					JSON.stringify({
+						type: "score_update",
+						scores: { mine: game.scores[game.o.id], theirs: game.scores[game.x.id] },
+					}),
+				);
+			}
 		} else if (data.type === "rematch") {
 			const game = activeGames.get(peer.id);
 			if (game) {
@@ -47,12 +88,35 @@ export default defineWebSocketHandler({
 
 				if (rematchRequests.has(opponent.id)) {
 					// Both agreed, swap symbols and restart
-					const newGame = { x: game.o, o: game.x };
+					const newGame = {
+						x: game.o,
+						o: game.x,
+						scores: game.scores,
+						isGameOver: false,
+					};
 					activeGames.set(game.x.id, newGame);
 					activeGames.set(game.o.id, newGame);
 
-					newGame.x.send(JSON.stringify({ type: "matched", symbol: "X" }));
-					newGame.o.send(JSON.stringify({ type: "matched", symbol: "O" }));
+					newGame.x.send(
+						JSON.stringify({
+							type: "matched",
+							symbol: "X",
+							scores: {
+								mine: newGame.scores[newGame.x.id],
+								theirs: newGame.scores[newGame.o.id],
+							},
+						}),
+					);
+					newGame.o.send(
+						JSON.stringify({
+							type: "matched",
+							symbol: "O",
+							scores: {
+								mine: newGame.scores[newGame.o.id],
+								theirs: newGame.scores[newGame.x.id],
+							},
+						}),
+					);
 
 					rematchRequests.delete(game.x.id);
 					rematchRequests.delete(game.o.id);

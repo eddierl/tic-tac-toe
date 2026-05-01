@@ -9,6 +9,8 @@ export class TicTacToePage {
   readonly findMatchButton: Locator;
   readonly rematchButton: Locator;
   readonly leaveButton: Locator;
+  readonly scoreMine: Locator;
+  readonly scoreTheirs: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -19,6 +21,8 @@ export class TicTacToePage {
     this.findMatchButton = page.getByRole('button', { name: /Find Match|Join Party/i });
     this.rematchButton = page.getByRole('button', { name: /Rematch/i });
     this.leaveButton = page.getByRole('button', { name: /Leave Party/i });
+    this.scoreMine = page.getByTestId('score-mine');
+    this.scoreTheirs = page.getByTestId('score-theirs');
   }
 
   async goto(groupId?: string) {

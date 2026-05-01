@@ -11,6 +11,7 @@ interface GameStatusProps {
 	isMyTurn: boolean;
 	gameOver: boolean;
 	opponentDisconnected?: boolean;
+	scores: { mine: number; theirs: number };
 }
 
 export function GameStatus({
@@ -23,7 +24,11 @@ export function GameStatus({
 	isMyTurn,
 	gameOver,
 	opponentDisconnected,
+	scores,
 }: GameStatusProps) {
+	const scoreX = playerSymbol === "X" ? scores.mine : scores.theirs;
+	const scoreO = playerSymbol === "O" ? scores.mine : scores.theirs;
+
 	return (
 		<header className="w-full mb-8 text-center">
 			<h1
@@ -64,7 +69,36 @@ export function GameStatus({
 			</h1>
 
 			{isMultiplayer && matchStatus === "matched" && (
-				<div className="flex flex-col items-center gap-4">
+				<div className="flex flex-col items-center gap-4 mt-4">
+					<div
+						className="flex items-center gap-6 px-6 py-3 bg-white/5 rounded-2xl border border-white/10 shadow-xl backdrop-blur-md"
+						data-testid="score"
+					>
+						<div className="flex flex-col items-center">
+							<span className="text-xs font-bold text-white/50 uppercase tracking-widest mb-1">
+								You
+							</span>
+							<span
+								className="text-3xl font-black text-white"
+								data-testid="score-mine"
+							>
+								{scores.mine}
+							</span>
+						</div>
+						<div className="w-px h-10 bg-white/10" />
+						<div className="flex flex-col items-center">
+							<span className="text-xs font-bold text-white/50 uppercase tracking-widest mb-1">
+								Opponent
+							</span>
+							<span
+								className="text-3xl font-black text-white"
+								data-testid="score-theirs"
+							>
+								{scores.theirs}
+							</span>
+						</div>
+					</div>
+
 					<div className="inline-flex items-center gap-3 px-6 py-2 bg-white/10 rounded-full border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)] backdrop-blur-sm animate-in fade-in zoom-in duration-500">
 						<span className="text-sm font-medium text-white/70">
 							You are playing as{" "}
