@@ -9,7 +9,7 @@
     "dev": "vite dev --port 3000",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "vitest run",
+    "test": "vitest run --exclude '**/e2e'",
     "format": "biome format --write",
     "lint": "biome check",
     "lint:fix": "biome check --write",
