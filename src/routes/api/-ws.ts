@@ -4,7 +4,7 @@ import { defineWebSocketHandler } from "nitro/h3";
 const waitingPeersByGroup = new Map<string, Peer[]>();
 const activeGames = new Map<
 	string,
-	{ x: Peer; o: Peer; score: { x: number; o: number } }
+	{ x: Peer; o: Peer; scores: { [x: string]: number }; isGameOver: boolean }
 >();
 const peerGroup = new Map<string, string>();
 const rematchRequests = new Set<string>();
@@ -70,13 +70,19 @@ export default defineWebSocketHandler({
 				game.x.send(
 					JSON.stringify({
 						type: "score_update",
-						scores: { mine: game.scores[game.x.id], theirs: game.scores[game.o.id] },
+						scores: {
+							mine: game.scores[game.x.id],
+							theirs: game.scores[game.o.id],
+						},
 					}),
 				);
 				game.o.send(
 					JSON.stringify({
 						type: "score_update",
-						scores: { mine: game.scores[game.o.id], theirs: game.scores[game.x.id] },
+						scores: {
+							mine: game.scores[game.o.id],
+							theirs: game.scores[game.x.id],
+						},
 					}),
 				);
 			}
